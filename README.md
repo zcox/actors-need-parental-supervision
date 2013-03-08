@@ -17,3 +17,12 @@ This repo provides code & notes for the March 2013 Iowa Scala Enthusiasts meetup
 - What is a supervisor hierarchy and how can you take advantage of it?
 - How should you isolate a dangerous operation in an actor, handle things when it blows up and keep moving forward?
 - What do you do when a Future completes with an exception instead of a value?
+
+## Lessons Learned (#akkaprotips)
+
+- A Future[T] really is more like a future Either[Throwable, T] than a future T
+ - Learn about & always remember how the Throwable persists across map/flatMap/sequence/etc
+ - You wouldn't call either.right.get; to be safe you'd call either.right getOrElse default
+ - So to be safe, always do future fallbackTo Future(default), or future recover { case t: Throwable => default }
+ - Probably use recover to handle exceptions differently, and fallbackTo to just provide a default
+- A future obtained by asking an actor can timeout; a future obtained directly from Future.apply will not timeout
