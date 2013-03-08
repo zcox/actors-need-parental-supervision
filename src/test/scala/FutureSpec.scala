@@ -93,6 +93,46 @@ class FutureSpec extends TestKit(ActorSystem("test")) with SpecificationLike wit
     }
   }
 
+  "Processing with futures" should {
+
+    /*
+    What should happen if stringFuture fails?
+      - There is no string in stringFuture to operate on
+      - The sizeFuture map will not be called
+      - Let's fall back to a value of -1 for sizeFuture
+
+    What should happen if sizeFuture fails?
+      - If stringFuture contains a null, the _.size in map will fail with NPE
+      - But then sizeFuture's fallbackTo will provide the default value
+      - So sizeFuture will still succeed
+
+    What should happen if the message future fails?
+      - There could be a bug in the message-building code that would cause this future to fail
+      - But then the fallbackTo will provide a generic error message
+      - So should not be possible for this method to return a failed future
+      - But if it did somehow return a future that will fail, it's entirely the caller's responsibility to handle it
+
+    The fallbackTo or recover after a map will be used when either:
+      - The original future fails
+      - Or the future created by the map fails
+    */
+    val ErrorSize = -1
+    val ErrorMessage = "Could not generate size message due to an error"
+    def lengthMessage(stringFuture: Future[String]): Future[String] = {
+      val sizeFuture = stringFuture map { _.size } fallbackTo { Promise.successful(ErrorSize) }
+      sizeFuture map { "It had size " + _ } fallbackTo { Promise.successful(ErrorMessage) }
+    }
+
+    "stop if a required future fails" in {
+      Await.result(lengthMessage(Promise.failed[String](new IllegalArgumentException("foo"))), 1 second) must_== "It had size -1"
+      Await.result(lengthMessage(Promise.successful(null)), 1 second) must_== "It had size -1"
+    }
+
+    "continue if an optional future fails" in {
+      todo
+    }
+  }
+
   "Future from ask" should {
     "complete with a value" in {
       todo
