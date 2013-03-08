@@ -98,11 +98,15 @@ class FutureSpec extends TestKit(ActorSystem("test")) with SpecificationLike wit
       todo
     }
 
-    "complete with an exception" in {
+    "fail because an exception was thrown" in {
       todo
     }
 
-    "complete with a timeout" in {
+    "fail because the computation time exceeded the timeout" in {
+      todo
+    }
+
+    "fail because no message was ever sent to sender" in {
       todo
     }
   }
