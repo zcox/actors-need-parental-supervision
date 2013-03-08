@@ -26,3 +26,4 @@ This repo provides code & notes for the March 2013 Iowa Scala Enthusiasts meetup
  - So to be safe, always do future fallbackTo Future(default), or future recover { case t: Throwable => default }
  - Probably use recover to handle exceptions differently, and fallbackTo to just provide a default
 - A future obtained by asking an actor can timeout; a future obtained directly from Future.apply will not timeout
+- An actor that replies to sender (to complete an ask future) must handle all possible messages and always reply, otherwise the future will time out
