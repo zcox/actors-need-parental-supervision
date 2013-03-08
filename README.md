@@ -22,6 +22,8 @@ This repo provides code & notes for the March 2013 Iowa Scala Enthusiasts meetup
 
 - A Future[T] really is more like a future Either[Throwable, T] than a future T
  - Learn about & always remember how the Throwable persists across map/flatMap/sequence/etc
+  - Mapping a failed future results in another failed future
+  - Sequencing futures in which any of them fail results in a failed future
  - You wouldn't call either.right.get; to be safe you'd call either.right getOrElse default
  - So to be safe, always do future fallbackTo Future(default), or future recover { case t: Throwable => default }
  - Probably use recover to handle exceptions differently, and fallbackTo to just provide a default
