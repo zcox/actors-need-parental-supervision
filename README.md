@@ -20,6 +20,7 @@ This repo provides code & notes for the March 2013 Iowa Scala Enthusiasts meetup
 
 ## Lessons Learned (#akkaprotips)
 
+- Akka doesn't magically make your system fault-tolerant; you have to put some effort into it
 - A Future[T] really is more like a future Either[Throwable, T] than a future T
  - Learn about & always remember how the Throwable persists across map/flatMap/sequence/etc
   - Mapping a failed future results in another failed future
