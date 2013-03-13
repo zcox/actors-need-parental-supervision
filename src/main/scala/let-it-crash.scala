@@ -1,5 +1,28 @@
 package iascala
 
-//an actor that doesn't let it crash
+import akka.actor.Actor
+import java.sql.SQLException
+import java.io.IOException
 
-//an actor that lets it crash
+trait DangerousShit {
+  def useTheDatabase() {
+    //this could throw a nice variety of different exceptions
+  }
+}
+
+class PleaseDontCrash extends Actor with DangerousShit {
+  def receive = {
+    case msg => try {
+      useTheDatabase()
+    } catch {
+      case e: SQLException => //reconnect and try again?
+      case e: IOException => //ummm... 
+    }
+  }
+}
+
+class GoAheadAndCrash extends Actor with DangerousShit {
+  def receive = {
+    case msg => useTheDatabase() //supervisor will deal with an exception
+  }
+}
